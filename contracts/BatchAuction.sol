@@ -75,9 +75,9 @@ contract BatchAuction is BatchRevealBase {
             numBids += fillAtAnyPriceQuantity;
         }
 
-        //if any quantity is still unfilled, we need to see if the price 
-        //beats the lowest bids
+        //if any quantity is still unfilled, we need to see if the price beats the lowest bids
         uint256 unfilledQuantity = quantity - fillAtAnyPriceQuantity;
+        //process as many bids as possible given current prices
         unfilledQuantity = processBidsInQueue(unfilledQuantity, price);
         uint256 filledQuantity = quantity - unfilledQuantity;
         if(filledQuantity > 0) {
@@ -93,7 +93,6 @@ contract BatchAuction is BatchRevealBase {
         //clearing price is the price of the min bid at the time the bidding period is over
         uint256 clearingPrice = bidPriorityQueue.getMin().price;
         uint256 balance = balanceContributed[msg.sender];
-        // Bid[] storage winningBids = userBids[msg.sender];
         uint256[] storage winningBidIds = bidPriorityQueue.ownerToBidIds[msg.sender];
         //iterate through winning bids, minting correct quantity for user
         uint256 curNFTCount = nftCount;

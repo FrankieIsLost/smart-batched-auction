@@ -40,7 +40,7 @@ library MinPriorityQueue {
         return self.numBids;
     }
 
-    ///@notice view min bid. 
+    ///@notice view min bid
     function getMin(Queue storage self) public view returns (Bid storage) {
         require(!isEmpty(self), "nothing to return");
         uint256 minId = self.bidIdList[1];
