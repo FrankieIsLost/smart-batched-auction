@@ -99,12 +99,15 @@ contract BatchAuction is BatchRevealBase {
         for(uint256 i = 0; i < winningBidIds.length; i++) {
             uint256 curBidId = winningBidIds[i];
             Bid storage curBid = bidPriorityQueue.bidIdToBidMap[curBidId];
-            for(uint256 j = 0; j < curBid.quantity; j++) {
+            //cache quantity in memory for price calc and minting
+            uint256 qty = curBid.quantity;
+            //charge user quantity times clearing price
+            //update balance and quantity before minting to prevent reentrant claims
+            balance -= qty * clearingPrice;
+            curBid.quantity = 0;
+            for(uint256 j = 0; j < qty; j++) {
                 _safeMint(msg.sender, ++nftCount);
             }
-            //charge user quantity times clearing price
-            balance -= curBid.quantity * clearingPrice;
-            curBid.quantity = 0;
         }
         //refund any contributions not spent on mint
         (bool sent, ) = payable(msg.sender).call{value: balance}("");
